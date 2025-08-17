@@ -140,7 +140,11 @@
   (let ((response (gh-actions--api-request "GET" 
                                           (format "/repos/%s/%s/actions/workflows" owner repo))))
     (when response
-      (alist-get 'workflows response))))
+      (let ((workflows (alist-get 'workflows response)))
+        ;; Convert vector to list if needed
+        (if (vectorp workflows)
+            (append workflows nil)
+          workflows)))))
 
 (defun gh-actions--get-workflow-runs (owner repo workflow-id)
   "Get runs for a specific workflow."
@@ -148,7 +152,11 @@
                                           (format "/repos/%s/%s/actions/workflows/%s/runs" 
                                                   owner repo workflow-id))))
     (when response
-      (alist-get 'workflow_runs response))))
+      (let ((runs (alist-get 'workflow_runs response)))
+        ;; Convert vector to list if needed
+        (if (vectorp runs)
+            (append runs nil)
+          runs)))))
 
 ;;; Buffer Management
 
